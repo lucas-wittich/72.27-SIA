@@ -34,18 +34,18 @@ def simulate_attempts(pokemon, pokeball, attempts=100, noise=0, catch_rate=0, we
 if __name__ == '__main__':
     factory = PokemonFactory('pokemon.json')
 
-    # Load all Pokémon data
+    # Load all Pokemon data
     with open('pokemon.json', 'r') as f:
         pokemon_data = json.load(f)
 
-    # Iterate over Pokémon configurations
+    # Iterate over Pokemon configurations
     for pokemon_config in pokemon_configs:
         with open(f'configs/{pokemon_config}.json', 'r') as f:
             config = json.load(f)
             ball = config['pokeball']
             pokemon_name = config['pokemon']
 
-            # Extract Pokémon attributes from pokemon.json
+            # Extract Pokemon attributes from pokemon.json
             catch_rate = pokemon_data[pokemon_name]['catch_rate']
             weight = pokemon_data[pokemon_name]['weight']
             pokemon_type = ', '.join(pokemon_data[pokemon_name]['type'])
@@ -65,12 +65,12 @@ if __name__ == '__main__':
     # Save data
     pokemon_stats.to_csv('capture_results.csv', index=False)
 
-    # Graph 1: Capture Success by Pokéball & Noise
+    # Graph 1: Capture Success by Pokeball & Noise
     plt.figure(figsize=(10,6))
     sns.barplot(x='Pokeball', y='Capture_Success', hue='Noise', data=pokemon_stats)
-    plt.xlabel('Pokéball Type')
+    plt.xlabel('Pokeball Type')
     plt.ylabel('Capture Success Rate')
-    plt.title('Capture Success Rate by Pokéball Type & Noise Level')
+    plt.title('Capture Success Rate by Pokeball Type & Noise Level')
     plt.legend(title='Noise Level')
     plt.show()
 
@@ -88,15 +88,25 @@ if __name__ == '__main__':
     sns.scatterplot(x='Catch_Rate', y='Capture_Probability', hue='Pokemon', data=pokemon_stats)
     plt.xlabel('Catch Rate')
     plt.ylabel('Capture Probability')
-    plt.title('Capture Probability vs. Catch Rate for Different Pokémon')
+    plt.title('Capture Probability vs. Catch Rate for Different Pokemon')
     plt.legend(title='Pokemon')
     plt.show()
 
-    # Graph 4: Capture Probability vs. Pokémon Weight
+    # Graph 4: Capture Probability vs. Pokemon Weight
     plt.figure(figsize=(10,6))
     sns.scatterplot(x='Weight', y='Capture_Probability', hue='Pokemon', data=pokemon_stats)
     plt.xlabel('Weight')
     plt.ylabel('Capture Probability')
-    plt.title('Capture Probability vs. Pokémon Weight')
+    plt.title('Capture Probability vs. Pokemon Weight')
     plt.legend(title='Pokemon')
     plt.show()
+
+    # Graph 5: Capture probability vs. Pokemon Level
+    plt.figure(figsize=(10,6))
+    sns.lineplot(x="Level", y="Capture_Probability", hue="Pokemon", data=pokemon_stats)
+    plt.xlabel("Pokemon Level")
+    plt.ylabel("Capture Probability")
+    plt.title("Effect of Pokemon Level on Capture Probability")
+    plt.legend(title="Pokemon")
+    plt.show()
+
