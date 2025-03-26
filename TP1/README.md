@@ -28,6 +28,10 @@ To run the code, you need:
 
    - [`sokoban.py`](Sokoban/sokoban.py)  
    Play Sokoban manually using the **W A S D** keys
+   Optional: Select a difficulty (easy, medium, hard)
+   ```sh
+   python sokoban.py --difficulty <desired-difficulty>
+   ```
 
    - [`dfs.py`](Sokoban/dfs.py)  
    Solve Sokoban using the **Depth-First Search (DFS)** algorithm
@@ -50,7 +54,7 @@ To run the code, you need:
 
 ## Notes
 
-- The game uses **a single fixed board**, from Wikipedia.
+- The game uses **three fixed boards**.
 
 
 ## Authors

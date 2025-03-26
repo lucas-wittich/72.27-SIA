@@ -1,50 +1,87 @@
+import argparse
 import platform
 import sys
-
-# Detect OS for keyboard input
-o_system = platform.system()
-if o_system == 'Windows':
-    import keyboard
-else:
-    import tty
-    import termios
-
-    def getch():
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        try:
-            tty.setraw(fd)
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        return ch
+from collections import deque
 
 # Initial and goal state (unchanged)
 initial_state = [
-    ['#','#', '#', '#', '#', '#', '#','#'],
-    ['#','#', '#', ' ', ' ', ' ', '#','#'],
-    ['#','.', '@', '*', ' ', ' ', '#','#'],
-    ['#','#', '#', ' ', '*', '.', '#','#'],
-    ['#','.', '#', '#', '*', ' ', '#','#'],
-    ['#',' ', '#', ' ', '.', ' ', '#','#'],
-    ['#','*', ' ', '*', '*', '*', '.','#'],
-    ['#',' ', ' ', ' ', '.', ' ', ' ','#'],
-    ['#','#', '#', '#', '#', '#', '#','#'],
+    ['#', '#', '#', '#', '#', '#', '#', '#'],
+    ['#', '#', '#', ' ', ' ', ' ', '#', '#'],
+    ['#', '.', '@', '*', ' ', ' ', '#', '#'],
+    ['#', '#', '#', ' ', '*', '.', '#', '#'],
+    ['#', '.', '#', '#', '*', ' ', '#', '#'],
+    ['#', ' ', '#', ' ', '.', ' ', '#', '#'],
+    ['#', '*', ' ', '*', '*', '*', '.', '#'],
+    ['#', ' ', ' ', ' ', '.', ' ', ' ', '#'],
+    ['#', '#', '#', '#', '#', '#', '#', '#'],
 ]
 
 goal_state = [
-    ['#','#', '#', '#', '#', '#', '#','#'],
-    ['#','#', '#', ' ', ' ', ' ', '#','#'],
-    ['#','.', ' ', ' ', ' ', ' ', '#','#'],
-    ['#','#', '#', ' ', ' ', '.', '#','#'],
-    ['#','.', '#', '#', ' ', ' ', '#','#'],
-    ['#',' ', '#', ' ', '.', ' ', '#','#'],
-    ['#',' ', ' ', ' ', ' ', ' ', '.', '#'],
-    ['#',' ', ' ', ' ', '.', ' ', ' ','#'],
-    ['#','#', '#', '#', '#', '#', '#','#'],
+    ['#', '#', '#', '#', '#', '#', '#', '#'],
+    ['#', '#', '#', ' ', ' ', ' ', '#', '#'],
+    ['#', '.', ' ', ' ', ' ', ' ', '#', '#'],
+    ['#', '#', '#', ' ', ' ', '.', '#', '#'],
+    ['#', '.', '#', '#', ' ', ' ', '#', '#'],
+    ['#', ' ', '#', ' ', '.', ' ', '#', '#'],
+    ['#', ' ', ' ', ' ', ' ', ' ', '.', '#'],
+    ['#', ' ', ' ', ' ', '.', ' ', ' ', '#'],
+    ['#', '#', '#', '#', '#', '#', '#', '#'],
 ]
 
+initial_state_easy = [
+    ['#', '#', '#', '#', '#', '#', '#'],
+    ['#', ' ', ' ', ' ', '#', '#', '#'],
+    ['#', ' ', '*', '@', '#', '#', '#'],
+    ['#', ' ', '#', '*', '#', '#', '#'],
+    ['#', ' ', '.', ' ', '.', ' ', '#'],
+    ['#', '#', ' ', ' ', ' ', ' ', '#'],
+    ['#', ' ', ' ', '#', '#', '#', '#'],
+    ['#', '#', '#', '#', '#', '#', '#']
+]
+
+goal_state_easy = [
+    ['#', '#', '#', '#', '#', '#', '#'],
+    ['#', ' ', ' ', ' ', '#', '#', '#'],
+    ['#', ' ', ' ', ' ', '#', '#', '#'],
+    ['#', ' ', '#', ' ', '#', '#', '#'],
+    ['#', ' ', '.', ' ', '.', ' ', '#'],
+    ['#', '#', ' ', ' ', ' ', ' ', '#'],
+    ['#', ' ', ' ', '#', '#', '#', '#'],
+    ['#', '#', '#', '#', '#', '#', '#']
+]
+
+initial_state_hard = [
+    ['#', '#', '#', '#', '#', '#', '#', '#'],
+    ['#', '#', ' ', ' ', ' ', ' ', ' ', '#'],
+    ['#', '#', '.', '*', '#', '#', ' ', '#'],
+    ['#', ' ', '.', '*', '.', '#', ' ', '#'],
+    ['#', ' ', ' ', '*', '@', '#', ' ', '#'],
+    ['#', '#', '#', ' ', ' ', ' ', ' ', '#'],
+    ['#', '#', '#', ' ', '*', '#', '#', '#'],
+    ['#', '#', '#', ' ', ' ', '#', '#', '#'],
+    ['#', '#', '#', '#', '#', '#', '#', '#']
+]
+
+goal_state_hard = [
+    ['#', '#', '#', '#', '#', '#', '#', '#'],
+    ['#', '#', ' ', ' ', ' ', ' ', ' ', '#'],
+    ['#', '#', '.', ' ', '#', '#', ' ', '#'],
+    ['#', ' ', '.', ' ', '.', '#', ' ', '#'],
+    ['#', ' ', ' ', ' ', '.', '#', ' ', '#'],
+    ['#', '#', '#', ' ', ' ', ' ', ' ', '#'],
+    ['#', '#', '#', ' ', ' ', '#', '#', '#'],
+    ['#', '#', '#', ' ', ' ', '#', '#', '#'],
+    ['#', '#', '#', '#', '#', '#', '#', '#']
+]
+
+puzzles = {
+    'easy': (initial_state_easy, goal_state_easy),
+    'medium': (initial_state, goal_state),
+    'hard': (initial_state_hard, goal_state_hard),
+}
+
 actions = ['up', 'down', 'left', 'right']
+
 
 def generate_next_states(state):
     next_states = []
@@ -53,6 +90,7 @@ def generate_next_states(state):
         if new_state not in next_states:
             next_states.append(new_state)
     return next_states
+
 
 def action_function(state, action):
     new_state = [row[:] for row in state]
@@ -87,6 +125,7 @@ def action_function(state, action):
 
     return new_state
 
+
 def goal_test(state, goal_state):
     for i in range(len(goal_state)):
         for j in range(len(goal_state[i])):
@@ -94,45 +133,63 @@ def goal_test(state, goal_state):
                 return False
     return True
 
+
 def print_state(state):
     for row in state:
         print(' '.join(row))
     print()
 
-# Extended to detect 'q' for restart
+
 def get_user_action():
     valid_actions = {'w': 'up', 's': 'down', 'a': 'left', 'd': 'right'}
-    while True:
-        if o_system == "Windows":
-            event = keyboard.read_event()
-            if event.event_type == keyboard.KEY_DOWN:
-                if event.name in valid_actions:
-                    return valid_actions[event.name]
-                elif event.name == 'q':
-                    return 'restart'
-        else:
-            user_input = getch()
-            if user_input in valid_actions:
-                return valid_actions[user_input]
-            elif user_input == 'q':
+    try:
+        while True:
+            user_input = input("Move (WASD or Q to restart): ").strip().lower()
+            if user_input == 'q':
                 return 'restart'
+            elif user_input in valid_actions:
+                return valid_actions[user_input]
+    except KeyboardInterrupt:
+        print("\nCtrl+C detected. Exiting...")
+        sys.exit(0)
+
+
+def compute_reachable_box_positions():
+    rows = len(goal_state)
+    cols = len(goal_state[0])
+    reachable = set()
+    for i in range(rows):
+        for j in range(cols):
+            if goal_state[i][j] == '.':
+                reachable.add((i, j))
+    changed = True
+    while changed:
+        changed = False
+        for i in range(rows):
+            for j in range(cols):
+                if goal_state[i][j] != '#' and (i, j) not in reachable:
+                    for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                        next_i, next_j = i + dx, j + dy
+                        prev_i, prev_j = i - dx, j - dy
+                        if (0 <= next_i < rows and 0 <= next_j < cols and
+                                0 <= prev_i < rows and 0 <= prev_j < cols):
+                            if (next_i, next_j) in reachable and goal_state[prev_i][prev_j] != '#':
+                                reachable.add((i, j))
+                                changed = True
+                                break
+    return reachable
+
 
 def all_boxes_stuck(state):
-    for i in range(1, len(state)-1):
-        for j in range(1, len(state[i])-1):
-            if state[i][j] == '*':
-                if goal_state[i][j] == '.':
-                    continue
-                if (state[i-1][j] == '#' and state[i][j-1] == '#') or \
-                   (state[i-1][j] == '#' and state[i][j+1] == '#') or \
-                   (state[i+1][j] == '#' and state[i][j-1] == '#') or \
-                   (state[i+1][j] == '#' and state[i][j+1] == '#'):
-                    continue
-                else:
-                    return False
-    return True
+    reachable = compute_reachable_box_positions()
+    for i in range(len(state)):
+        for j in range(len(state[i])):
+            # Only consider boxes that are not already on a goal.
+            if state[i][j] == '*' and (i, j) not in reachable:
+                return True
+    return False
 
-# Play game once
+
 def play_game():
     state = [row[:] for row in initial_state]
     print("Use W A S D to move. Press 'q' to restart. Press Ctrl+C to quit.\n")
@@ -144,7 +201,7 @@ def play_game():
             return False  # Do not restart automatically
 
         if all_boxes_stuck(state):
-            print("GAME OVER. All boxes are stuck!")
+            print("GAME OVER. A box is stuck and cannot reach a goal!")
             return False
 
         action = get_user_action()
@@ -155,9 +212,18 @@ def play_game():
             state = action_function(state, action)
             print_state(state)
 
-# Run with restart loop
+
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Sokoban Game")
+    parser.add_argument('--difficulty', choices=['easy', 'medium', 'hard'], default='medium',
+                        help='Select difficulty level: easy, medium, or hard')
+    args = parser.parse_args()
+
+    selected_initial, selected_goal = puzzles[args.difficulty]
+    initial_state = selected_initial
+    goal_state = selected_goal
+
     while True:
         restart = play_game()
         if not restart:
-            break  # Exit if not restarting
+            break
