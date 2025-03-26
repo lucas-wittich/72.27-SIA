@@ -10,7 +10,7 @@ Implementation of a **Sokoban** game in Python with different search algorithms:
 ## Requirements
 
 To run the code, you need:
-- Python 3.12
+- Python >= 3.10
 
 ## Execution
 

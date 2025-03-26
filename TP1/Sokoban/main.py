@@ -48,7 +48,7 @@ def run_algorithms_for_difficulty(difficulty):
 
 def run_all_algorithms():
     results = []
-    with ThreadPoolExecutor(max_workers=(len(puzzles)*6)) as executor:
+    with ThreadPoolExecutor(max_workers=(len(puzzles))) as executor:
         future_to_diff = {executor.submit(run_algorithms_for_difficulty, diff): diff for diff in puzzles}
         for future in as_completed(future_to_diff):
             diff = future_to_diff[future]
