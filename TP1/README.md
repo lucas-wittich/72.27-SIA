@@ -2,93 +2,63 @@
 
 ## Artificial Intelligence Systems - ITBA
 
-This repository contains the resolution of Practical Assignment 1 for the Artificial Intelligence Systems course at the Instituto Tecnológico de Buenos Aires.
+Implementation of a **Sokoban** game in Python with different search algorithms:
 
-## Assignment Description
-
-The objective of this assignment is to implement and analyze different search methods applied to classic problems.
-
-### Exercise 1: 8-Puzzle (Theoretical Analysis)
-
-The 8-puzzle consists of a 3x3 board with shuffled numbers and an empty space. The goal is to arrange the numbers by moving adjacent ones into the empty space until reaching the target configuration.
-
-#### Considerations to Analyze:
-- Define the state structure used.
-- Identify at least two non-trivial admissible heuristics.
-- Explain which search methods would be suitable, with which heuristic, and why.
-
-### Exercise 2: Implementation of a Search Engine
-
-You must choose and implement a search engine for one of the following games:
-
-1. **Sokoban** ([Description](https://en.wikipedia.org/wiki/Sokoban))
-   - There is no restriction on the number of moves.
-   - The goal is to optimize the number of moves.
-   - Complexity varies depending on the board size and the number of boxes and goals.
-
-2. **Grid World (multi-agent)**
-   - Contains multiple agents and goals in a grid environment.
-   - Each board configuration has specific characteristics.
-
-### Implementation
-
-A search engine must be implemented using the following algorithms:
-- **BFS** (Breadth-First Search)
-- **DFS** (Depth-First Search)
-- **Greedy Search**
-- **A*** (A-star)
-- **IDDFS** (Iterative Deepening Depth-First Search, optional)
-
-Additionally, the following should be evaluated:
-- **Admissible heuristics** (at least 2)
-
-### Evaluation of Results
-
-At the end of the execution, the following data must be recorded:
-- Result (success/failure)
-- Solution cost
-- Number of expanded nodes
-- Number of frontier nodes
-- Solution (sequence of moves from initial to final state)
-- Processing time
+- Uninformed search: **DFS**, **BFS**
+- Informed search: **Greedy**, **A\*** with two different heuristics
 
 ## Requirements
 
 To run the code, you need:
-- Python 3.x
-- Necessary libraries (install with `pip install -r requirements.txt` if a dependencies file is included)
+- Python 3.12
 
 ## Execution
 
 1. Clone this repository:
    ```sh
-   git clone <REPOSITORY_URL>
-   cd <REPOSITORY_NAME>
+   git clone https://github.com/lucas-wittich/72.27-SIA
+   cd 72.27-SIA/TP1/Sokoban
    ```
 
-2. Run the code according to the chosen problem:
-   - For Sokoban:
-     ```sh
-     python sokoban_solver.py
-     ```
-   - For Grid World:
-     ```sh
-     python gridworld_solver.py
-     ```
+2. Run the code:
 
-3. Review the generated results in the console output or corresponding log files.
+   ```sh
+   python <file-to-run.py>
+   ```
 
-## Deliverables
+   - [`sokoban.py`](Sokoban/sokoban.py)  
+   Play Sokoban manually using the **W A S D** keys
 
-The practical assignment must include:
-- Source code
-- Explanatory presentation
-- This `README.md` file with execution instructions
+   - [`dfs.py`](Sokoban/dfs.py)  
+   Solve Sokoban using the **Depth-First Search (DFS)** algorithm
+
+   - [`bfs.py`](Sokoban/bfs.py)  
+   Solve Sokoban using the **Breadth-First Search (BFS)** algorithm
+
+   - [`greedy.py`](Sokoban/greedy.py)  
+   Solve Sokoban with **Greedy Search**  
+   Heuristics: **Manhattan Distance** and **Misplaced Pieces**
+
+   - [`astar.py`](Sokoban/astar.py)  
+   Solve Sokoban using the **A\*** algorithm  
+   Heuristics: **Manhattan Distance** and **Misplaced Pieces**
+
+   - [`main.py`](Sokoban/main.py)  
+   Runs several games with all the different algorithms and yields both plots and summaries of their performances. 
+
+3. Review the generated results in the console output.
+
+## Notes
+
+- The game uses **a single fixed board**, from Wikipedia.
+
 
 ## Authors
-Include the names of the team members.
+- Mona Helness
+- Lilian Michalak
+- Camilla Adriazola Johannessen
+- Lukas Wittich
 
 ---
 
-This assignment is part of the Artificial Intelligence Systems course at ITBA.
 
