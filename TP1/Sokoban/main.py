@@ -232,5 +232,5 @@ if __name__ == "__main__":
     aggregated_results = sort_aggregated(aggregated_results)
 
     print_summary(normalized_results)
-    print_solution_paths_to_files(normalized_results)
+    # print_solution_paths_to_files(normalized_results)
     plot_results(normalized_results, aggregated_results)
