@@ -127,6 +127,7 @@ def sort_aggregated(aggregated_results):
 
 def plot_results(results, aggregated):
     names = [f"{res['puzzle']} - {res['algorithm']}" for res in results]
+
     steps = [res['steps'] if res['steps'] is not None else 0 for res in results]
     times = [res['time'] for res in results]
     avg_times = [res.get('avg_time_per_move', 0) for res in results]
@@ -137,10 +138,15 @@ def plot_results(results, aggregated):
     fig1, axs1 = plt.subplots(1, 2, figsize=(12, 6))
     axs1[0].bar(names, steps)
     axs1[0].set_title("Moves")
-    axs1[0].tick_params(axis='x', rotation=45)
+    # Keep rotation=0 if you have multiline labels
+    axs1[0].tick_params(axis='x', rotation=90)
+
     axs1[1].bar(names, times)
     axs1[1].set_title("Runtime (s)")
-    axs1[1].tick_params(axis='x', rotation=45)
+    axs1[1].tick_params(axis='x', rotation=90)
+
+    # Make room at bottom for multiline labels
+    fig1.subplots_adjust(bottom=0.3)
     plt.tight_layout()
     plt.show()
 
@@ -148,13 +154,17 @@ def plot_results(results, aggregated):
     fig2, axs2 = plt.subplots(1, 3, figsize=(18, 6))
     axs2[0].bar(names, avg_times)
     axs2[0].set_title("Avg Time per Move (s)")
-    axs2[0].tick_params(axis='x', rotation=45)
+    axs2[0].tick_params(axis='x', rotation=90)
+
     axs2[1].bar(names, nodes_expanded)
     axs2[1].set_title("Nodes Expanded")
-    axs2[1].tick_params(axis='x', rotation=45)
+    axs2[1].tick_params(axis='x', rotation=90)
+
     axs2[2].bar(names, max_frontier)
     axs2[2].set_title("Max Frontier")
-    axs2[2].tick_params(axis='x', rotation=45)
+    axs2[2].tick_params(axis='x', rotation=90)
+
+    fig2.subplots_adjust(bottom=0.3)
     plt.tight_layout()
     plt.show()
 
@@ -168,9 +178,11 @@ def plot_results(results, aggregated):
     axs3[0].bar(algs, agg_avg_time)
     axs3[0].set_title("Aggregated Avg Time per Move (s)")
     axs3[0].tick_params(axis='x', rotation=45)
+
     axs3[1].bar(algs, agg_avg_nodes)
     axs3[1].set_title("Aggregated Avg Nodes Expanded")
     axs3[1].tick_params(axis='x', rotation=45)
+
     plt.tight_layout()
     plt.show()
 
@@ -200,8 +212,9 @@ def print_solution_paths_to_files(results):
                 f.write(f"Solution found in {res['steps']} moves, in {res['time']:.4f} s\n")
                 f.write(
                     f"Nodes expanded: {res['nodes_expanded']}, Max frontier: {res['max_frontier']}\n Full solution path:\n")
-                for i, (action, state) in enumerate(res["solution_path"], 1):
-                    f.write(f"  Move {i}: {action}\n")
+                for i, (action, state) in enumerate(res["solution_path"], 0):
+                    if i != 0:
+                        f.write(f"  Move {i}: {action}\n")
                     for row in state:
                         f.write("    " + " ".join(row) + "\n")
                     f.write("\n")
