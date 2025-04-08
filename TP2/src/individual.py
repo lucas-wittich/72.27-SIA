@@ -1,4 +1,3 @@
-# Individual representation (ASCII or triangle-based)
 import random
 import copy
 from PIL import Image, ImageDraw
@@ -6,16 +5,6 @@ from PIL import Image, ImageDraw
 
 class TriangleIndividual:
     def __init__(self, triangles, canvas_size):
-        """
-        Initialize a TriangleIndividual.
-
-        Parameters:
-        - triangles: a list of dictionaries, each representing a triangle with:
-            - x1, y1, x2, y2, x3, y3: coordinates of the three points
-            - color: a tuple (R, G, B, A) representing the color and transparency
-        - canvas_size: a tuple (width, height) for the drawing canvas
-        """
-
         self.triangles = triangles
         self.canvas_size = canvas_size
         self.fitness = None
@@ -23,68 +12,59 @@ class TriangleIndividual:
     @classmethod
     def random_initialize(cls, num_triangles, canvas_size):
         """
-        Create a TriangleIndividual with a random genotype.
-
-        Parameters:
-        - num_triangles: number of triangles in the genotype
-        - canvas_size: a tuple (width, height) for the drawing canvas
-
-        Returns:
-        - A TriangleIndividual instance with randomly generated triangle data.
+        Create a TriangleIndividual with a random genotype of smaller, clustered triangles.
         """
-
         width, height = canvas_size
         triangles = []
+
         for _ in range(num_triangles):
+            # Choose a random center point within the canvas
+            cx = random.randint(0, width)
+            cy = random.randint(0, height)
+
+            # Limit triangle size to 10–40 pixels for better control
+            max_size = 40
+            size = random.randint(10, max_size)
+
+            # Generate points for each triangle
             triangle = {
-                "x1": random.randint(0, width),
-                "y1": random.randint(0, height),
-                "x2": random.randint(0, width),
-                "y2": random.randint(0, height),
-                "x3": random.randint(0, width),
-                "y3": random.randint(0, height),
+                "x1": cx + random.randint(-size, size),
+                "y1": cy + random.randint(-size, size),
+                "x2": cx + random.randint(-size, size),
+                "y2": cy + random.randint(-size, size),
+                "x3": cx + random.randint(-size, size),
+                "y3": cy + random.randint(-size, size),
                 "color": (
-                    random.randint(0, 255),  # Red
-                    random.randint(0, 255),  # Green
-                    random.randint(0, 255),  # Blue
-                    random.randint(30, 180)  # (translucency)
+                    random.randint(0, 255),    # R
+                    random.randint(0, 255),    # G
+                    random.randint(0, 255),    # B
+                    random.randint(30, 180)    # Alpha (transparency)
                 )
             }
+
+            # Ensure the points are within canvas bounds
+            for key in ["x1", "x2", "x3"]:
+                triangle[key] = max(0, min(triangle[key], width))
+            for key in ["y1", "y2", "y3"]:
+                triangle[key] = max(0, min(triangle[key], height))
+
             triangles.append(triangle)
+
         return cls(triangles, canvas_size)
 
     def clone(self):
-        """
-        Create a deep copy of this individual.
+        clone = TriangleIndividual(copy.deepcopy(self.triangles), self.canvas_size)
+        clone.fitness = self.fitness
+        return clone
 
-        This is important to avoid side effects when modifying individuals
-        during mutation or crossover.
-        """
-
-        return TriangleIndividual(copy.deepcopy(self.triangles), self.canvas_size)
-
-    def mutate(self, mutation_rate=0.01, delta=10):
-        """
-        Apply mutations to the individual's genotype.
-
-        Each triangle has a chance to have one of its point coordinates or one
-        of its color components adjusted by a random delta.
-
-        Parameters:
-        - mutation_rate: probability of mutating each attribute
-        - delta: maximum change applied during mutation
-        """
-
+    def mutate(self, mutation_rate=0.05, delta=10):
         width, height = self.canvas_size
         for triangle in self.triangles:
-            # Mutate a coordinate of a randomly chosen vertex
             if random.random() < mutation_rate:
                 point = random.choice(["x1", "y1", "x2", "y2", "x3", "y3"])
                 triangle[point] += random.randint(-delta, delta)
-                # Ensure the coordinate stays within canvas bounds
                 triangle[point] = max(0, min(triangle[point], width if 'x' in point else height))
 
-            # Mutate one of the color components
             if random.random() < mutation_rate:
                 c_idx = random.randint(0, 3)
                 color = list(triangle["color"])
@@ -93,14 +73,7 @@ class TriangleIndividual:
                 triangle["color"] = tuple(color)
 
     def render(self):
-        """
-        Render the phenotype from the genotype.
-
-        Returns:
-        - A PIL Image showing all triangles drawn on a blank white canvas.
-        """
-
-        img = Image.new("RGBA", self.canvas_size, (255, 255, 255, 255))
+        img = Image.new("RGBA", self.canvas_size, (255, 255, 255, 0))
         draw = ImageDraw.Draw(img, "RGBA")
         for triangle in self.triangles:
             points = [
@@ -110,3 +83,4 @@ class TriangleIndividual:
             ]
             draw.polygon(points, fill=triangle["color"])
         return img
+

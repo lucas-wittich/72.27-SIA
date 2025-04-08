@@ -1,0 +1,23 @@
+{
+    "problem": "triangles",               
+    "input_image": "data/input_image.jpg",
+  
+    "population_size": 50,           
+    "num_generations": 100,          
+    "mutation_rate": 0.01,           
+    "crossover_rate": 0.9,           
+  
+    "num_triangles": 50,             
+    "canvas_size": [128, 128],       
+  
+    "selection_method": "tournament",
+    "selection_params": {
+      "tournament_size": 5,       
+      "deterministic": true       
+    },
+  
+    "stagnation_window_size": 10, 
+    "stagnation_threshold": 0.001,
+    "diversity_threshold": 0.1  
+  }
+  

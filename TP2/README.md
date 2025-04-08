@@ -10,7 +10,7 @@ Date: [Submission Date]
 This project implements a Genetic Algorithm engine to solve two visual approximation problems:
 
 ### Exercise 1: ASCII Image Generation
-Given a square input image, approximate it using ASCII characters arranged in an NxN grid.
+Given a square input image, approximate it using ASCII characters arranged in an NxN grid. No implementation needed. 
 
 ### Exercise 2: Image Approximation with Triangles
 Given any input image and a triangle count **T**, approximate the image by drawing T translucent, colored triangles over a blank canvas.
