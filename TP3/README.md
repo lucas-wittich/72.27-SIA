@@ -137,11 +137,17 @@ TP3/
     ```
 
 2. Run the code:
+    ```bash
+    python <file_to_run.py>
+    ```
     - ['test_XOR.py'](exercise_3/src/test_XOR.py)
     Script that tests the MLP on XOR and returns the output in the console
-    ```bash
-    python test_XOR.py
-    ```
+    - ['test_digits.py'](exercise_3/src/test_digits.py)
+    Script that tests the digit recognition for simple and noise affected pixels.
+    - ['test_parity.py'](exercise_3/src/test_parity.py)
+    Script that tests the MLP in terms of parity detection.
+    - As well as that there are three notebooks containing the plots for the sub exercises in exercise 3.
+
 
 
 ## Results and Evaluation
