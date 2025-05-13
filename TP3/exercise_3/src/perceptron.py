@@ -148,3 +148,26 @@ class MultiLayerPerceptron():
         if self.activations[-1] == 'softmax':
             return np.argmax(probs, axis=1)
         return (probs >= 0.5).astype(int)
+
+    def precision_recall_f1(self, X, Y_true):
+        Y_pred = self.predict(X)
+        Y_pred = Y_pred.ravel()
+        Y_true = np.array(Y_true).ravel()
+
+        if self.activations[-1] == 'softmax':
+            from sklearn.metrics import precision_score, recall_score, f1_score
+            prec = precision_score(Y_true, Y_pred, average='macro')
+            rec = recall_score(Y_true, Y_pred, average='macro')
+            f1 = f1_score(Y_true, Y_pred, average='macro')
+            return prec, rec, f1
+
+        TP = np.sum((Y_pred == 1) & (Y_true == 1))
+        FP = np.sum((Y_pred == 1) & (Y_true == 0))
+        FN = np.sum((Y_pred == 0) & (Y_true == 1))
+
+        precision = TP / (TP + FP) if (TP + FP) > 0 else 0.0
+        recall = TP / (TP + FN) if (TP + FN) > 0 else 0.0
+        f1 = (2 * precision * recall / (precision + recall)
+              if (precision + recall) > 0 else 0.0)
+
+        return precision, recall, f1

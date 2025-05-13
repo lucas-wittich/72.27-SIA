@@ -7,8 +7,6 @@ with open("../data/TP3-ej3-digitos.txt") as f:
 
 
 blocks = [lines[i:i+7] for i in range(0, len(lines), 7)]
-
-
 X = np.array([
     [int(bit) for row in block for bit in row.split()]
     for block in blocks
