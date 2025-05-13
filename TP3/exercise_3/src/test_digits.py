@@ -2,7 +2,6 @@ import numpy as np
 from perceptron import MultiLayerPerceptron
 from optimizer import SGD_Optimizer
 import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score
 
 
 with open("../data/TP3-ej3-digitos.txt") as f:
@@ -11,12 +10,10 @@ blocks = [lines[i:i+7] for i in range(0, len(lines), 7)]
 X = np.array([[int(b) for row in block for b in row.split()]
               for block in blocks])   # shape (10,35)
 
-# 2) Build integer labels 0–9, then one-hot encode
 digits = np.arange(10)                # [0,1,…,9]
 Y_int = digits.copy()                 # same shape (10,)
 Y_oh = np.eye(10)[Y_int]             # shape (10,10), one-hot rows
 
-# 3) Instantiate a 35→H→10 MLP with softmax output
 mlp = MultiLayerPerceptron(
     layer_sizes=[35, 16, 10],            # two layers: hidden=16, output=10
     optimizer=SGD_Optimizer(0.05),
@@ -28,17 +25,15 @@ mlp = MultiLayerPerceptron(
     verbose=True
 )
 
-# 4) Train with one-hot targets
 mlp.fit(X, Y_oh, epochs=1000)
 
-# 5) Predict: MLP.predict returns argmax when using softmax
-preds = mlp.predict(X)  # array of 10 integers in [0..9]
 
-# 6) Compute accuracy
+preds = mlp.predict(X)
+
 acc = (preds == Y_int).mean()
 print(f"Digit‐recognition accuracy: {acc*100:.1f}%")
 
-# 7) Display per‐digit
+
 print("True → Pred")
 for true, p in zip(Y_int, preds):
     print(f"   {true}   →   {p}")
@@ -55,7 +50,6 @@ def add_noise(X, flip_prob):
     return Xn
 
 
-# choose some noise levels to test
 noise_levels = np.linspace(0.0, 0.5, 11)
 
 accuracies = []
@@ -63,6 +57,9 @@ for p in noise_levels:
     np.random.seed(0)
     X_noisy = add_noise(X, p)
     preds = mlp.predict(X_noisy)
+
+    acc = (preds == Y_int).mean()
+    accuracies.append(acc)
 
 
 plt.figure(figsize=(6, 4))
