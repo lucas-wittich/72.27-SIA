@@ -29,8 +29,6 @@ This repository contains implementations for **Exercise 1** (Kohonen SOM & Oja�
 
 ## Usage
 
-### Exercise 1
-
 1. Navigate to the directory:
     ```bash
     cd <directory>
@@ -41,8 +39,3 @@ This repository contains implementations for **Exercise 1** (Kohonen SOM & Oja�
     Contains Plots for Exercise 1 of the TP
     - ['exercise_2.ipynb'](exercise_2/src/exercise_2.ipynb)
     Contains Plots for Exercise 2 of the TP
-
-
----
-
-*Prepared for SIA TP4 – Spring 2025*
